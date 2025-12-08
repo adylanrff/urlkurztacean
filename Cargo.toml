@@ -3,5 +3,10 @@ name = "urlkurztacean"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "urlkurztacean"
+path = "src/lib/lib.rs"
+
 [dependencies]
 rand = "0.9.2"
+url = "2.5.7"
