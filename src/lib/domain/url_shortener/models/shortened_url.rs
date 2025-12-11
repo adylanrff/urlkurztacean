@@ -4,8 +4,8 @@ use crate::domain::url_shortener::models::{original_url::OriginalUrl, short_code
 
 #[derive(Debug, Clone)]
 pub struct ShortenedUrl {
-    original_url: OriginalUrl,
-    short_code: ShortCode,
+    pub original_url: OriginalUrl,
+    pub short_code: ShortCode,
 }
 
 impl ShortenedUrl {

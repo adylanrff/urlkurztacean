@@ -1,21 +1,20 @@
 use std::fmt::Display;
+use thiserror::Error;
 
 use url;
 
 #[derive(Debug, Clone)]
 pub struct OriginalUrl(url::Url);
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum UrlError {
-    ParseError(url::ParseError),
+    #[error("url parsing error")]
+    ParseError(#[from] url::ParseError),
 }
 
 impl OriginalUrl {
     pub fn new(input: &str) -> Result<Self, UrlError> {
-        match url::Url::parse(input) {
-            Ok(v) => Ok(Self(v)),
-            Err(e) => Err(UrlError::ParseError(e)),
-        }
+        Ok(OriginalUrl(url::Url::parse(input)?))
     }
 }
 

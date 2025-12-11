@@ -1,10 +1,12 @@
 use core::fmt::Display;
+use thiserror::Error;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct ShortCode(String);
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum ShortCodeError {
+    #[error("code cannot be empty")]
     NoEmptyString,
 }
 
