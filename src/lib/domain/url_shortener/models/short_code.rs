@@ -11,11 +11,12 @@ pub enum ShortCodeError {
 }
 
 impl ShortCode {
-    pub fn new(e: &str) -> Result<Self, ShortCodeError> {
+    pub fn new(e: impl Into<String>) -> Result<Self, ShortCodeError> {
+        let e = e.into();
         if e.is_empty() {
             Err(ShortCodeError::NoEmptyString)
         } else {
-            Ok(ShortCode(e.to_string()))
+            Ok(ShortCode(e))
         }
     }
 }

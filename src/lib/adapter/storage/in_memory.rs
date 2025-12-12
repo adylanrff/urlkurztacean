@@ -2,7 +2,7 @@ use std::{cell::RefCell, collections::HashMap};
 
 use crate::domain::url_shortener::{
     models::{short_code::ShortCode, shortened_url::ShortenedUrl},
-    ports::{CreateUrlError, GetByCodeError, UrlRepository},
+    ports::{CreateUrlError, GetByCodeError, ShortenedUrlRepository},
 };
 
 #[derive(Debug, Default)]
@@ -28,8 +28,12 @@ impl InMemoryStorage {
     }
 }
 
-impl UrlRepository for InMemoryStorage {
+impl ShortenedUrlRepository for InMemoryStorage {
     fn create(&self, shortened_url: &ShortenedUrl) -> Result<(), CreateUrlError> {
+        if self.get(&shortened_url.short_code).is_some() {
+            return Err(CreateUrlError::AlreadyExists);
+        }
+
         self.add(shortened_url);
         Ok(())
     }

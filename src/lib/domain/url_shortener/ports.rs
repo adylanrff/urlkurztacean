@@ -6,6 +6,8 @@ use crate::domain::url_shortener::models::{short_code::ShortCode, shortened_url:
 pub enum CreateUrlError {
     #[error("database error")]
     DBError(anyhow::Error),
+    #[error("url already exists")]
+    AlreadyExists,
 }
 
 #[derive(Debug, Error)]
@@ -16,7 +18,7 @@ pub enum GetByCodeError {
     NotFound,
 }
 
-pub trait UrlRepository {
+pub trait ShortenedUrlRepository {
     fn create(&self, shortened_url: &ShortenedUrl) -> Result<(), CreateUrlError>;
     fn get_by_code(&self, code: &ShortCode) -> Result<ShortenedUrl, GetByCodeError>;
 }
