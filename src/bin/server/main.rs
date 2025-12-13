@@ -1,6 +1,13 @@
-use urlkurztacean::domain::url_shortener::models::original_url;
+use urlkurztacean::{
+    adapter::{inbound::http::HttpServer, outbound::storage::in_memory::InMemoryStorage},
+    application::services::Service,
+};
 
-fn main() {
-    let url = original_url::OriginalUrl::new("https://google.com").unwrap();
-    println!("{}", url);
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let repo = InMemoryStorage::new();
+    let service = Service::new(repo);
+
+    let http_server = HttpServer::new(service).await;
+    http_server.run().await
 }

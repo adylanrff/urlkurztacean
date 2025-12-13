@@ -5,12 +5,10 @@ use std::{
 
 use async_trait::async_trait;
 
-use crate::domain::url_shortener::{
-    models::{short_code::ShortCode, shortened_url::ShortenedUrl},
-    ports::{CreateUrlError, GetByCodeError, ShortenedUrlRepository},
-};
+use crate::application::ports::{CreateUrlError, GetByCodeError, ShortenedUrlRepository};
+use crate::domain::url_shortener::models::{short_code::ShortCode, shortened_url::ShortenedUrl};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct InMemoryStorage {
     store: Arc<RwLock<HashMap<ShortCode, ShortenedUrl>>>,
 }
@@ -40,9 +38,9 @@ impl InMemoryStorage {
 
 #[async_trait]
 impl ShortenedUrlRepository for InMemoryStorage {
-    async fn create(&self, shortened_url: &ShortenedUrl) -> Result<(), CreateUrlError> {
+    async fn create(&self, shortened_url: &ShortenedUrl) -> Result<ShortenedUrl, CreateUrlError> {
         self.add(shortened_url)?;
-        Ok(())
+        Ok(shortened_url.clone())
     }
 
     async fn get_by_code(&self, code: &ShortCode) -> Result<ShortenedUrl, GetByCodeError> {

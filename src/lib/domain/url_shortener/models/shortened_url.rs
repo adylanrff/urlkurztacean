@@ -1,8 +1,10 @@
 use std::fmt::Display;
 
+use serde::{Deserialize, Serialize};
+
 use crate::domain::url_shortener::models::{original_url::OriginalUrl, short_code::ShortCode};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ShortenedUrl {
     pub original_url: OriginalUrl,
     pub short_code: ShortCode,

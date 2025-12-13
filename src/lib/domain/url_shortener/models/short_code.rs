@@ -1,7 +1,8 @@
 use core::fmt::Display;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub struct ShortCode(String);
 
 #[derive(Debug, Error)]

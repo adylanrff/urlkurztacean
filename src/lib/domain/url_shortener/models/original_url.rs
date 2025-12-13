@@ -1,20 +1,23 @@
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use thiserror::Error;
-
 use url;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OriginalUrl(url::Url);
 
 #[derive(Debug, Error)]
 pub enum UrlError {
-    #[error("url parsing error")]
-    ParseError(#[from] url::ParseError),
+    #[error("parse error: {0}")]
+    ParseError(url::ParseError),
 }
 
 impl OriginalUrl {
     pub fn new(input: &str) -> Result<Self, UrlError> {
-        Ok(OriginalUrl(url::Url::parse(input)?))
+        match url::Url::parse(input) {
+            Ok(v) => Ok(Self(v)),
+            Err(e) => Err(UrlError::ParseError(e)),
+        }
     }
 }
 
