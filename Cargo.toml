@@ -9,6 +9,7 @@ path = "src/lib/lib.rs"
 
 [dependencies]
 anyhow = "1.0.100"
+async-trait = "0.1.89"
 rand = "0.9.2"
 thiserror = "2.0.17"
 tokio = "1.48.0"
