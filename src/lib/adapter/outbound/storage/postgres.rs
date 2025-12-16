@@ -19,11 +19,15 @@ struct PostgresShortenedUrlRecord {
     short_code: String,
 }
 
-impl Into<ShortenedUrl> for PostgresShortenedUrlRecord {
-    fn into(self) -> ShortenedUrl {
-        let original_url = OriginalUrl::new(&self.original_url).unwrap();
-        let short_code = ShortCode::new(&self.short_code).unwrap();
-        ShortenedUrl::new(original_url, short_code)
+impl From<PostgresShortenedUrlRecord> for ShortenedUrl {
+    fn from(value: PostgresShortenedUrlRecord) -> Self {
+        let original_url = OriginalUrl::new(&value.original_url).unwrap();
+        let short_code = ShortCode::new(&value.short_code).unwrap();
+
+        Self {
+            original_url: original_url,
+            short_code: short_code,
+        }
     }
 }
 
@@ -36,7 +40,13 @@ impl ShortenedUrlRepository for PostgresStorage {
             shortened_url.short_code.to_string(),
         )
         .execute(&self.pool)
-        .await?;
+        .await
+        .map_err(|e| match e {
+            sqlx::Error::Database(db_err) if db_err.is_unique_violation() => {
+                CreateUrlError::AlreadyExists
+            }
+            other => CreateUrlError::DBError(other),
+        })?;
 
         return Ok(ShortenedUrl::new(
             shortened_url.original_url.clone(),
@@ -51,7 +61,11 @@ impl ShortenedUrlRepository for PostgresStorage {
             short_code.to_string()
         )
         .fetch_one(&self.pool)
-        .await?;
+        .await
+        .map_err(|e| match e {
+            sqlx::Error::RowNotFound => GetByCodeError::NotFound,
+            other => GetByCodeError::DBError(other),
+        })?;
 
         Ok(shortened_url.into())
     }
