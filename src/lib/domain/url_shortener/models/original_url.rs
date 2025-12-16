@@ -5,7 +5,6 @@ use url;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OriginalUrl(url::Url);
-
 #[derive(Debug, Error)]
 pub enum UrlError {
     #[error("parse error: {0}")]
@@ -24,5 +23,11 @@ impl OriginalUrl {
 impl Display for OriginalUrl {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl Into<String> for OriginalUrl {
+    fn into(self) -> String {
+        self.0.to_string()
     }
 }

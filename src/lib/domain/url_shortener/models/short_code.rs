@@ -5,6 +5,12 @@ use thiserror::Error;
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub struct ShortCode(String);
 
+impl Into<String> for ShortCode {
+    fn into(self) -> String {
+        return self.0;
+    }
+}
+
 #[derive(Debug, Error)]
 pub enum ShortCodeError {
     #[error("code cannot be empty")]

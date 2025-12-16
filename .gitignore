@@ -18,4 +18,8 @@ Cargo.lock
 *.pdb
 
 # End of https://www.toptal.com/developers/gitignore/api/rust
+.sqlx
+.env
 
+.cargo/
+!.cargo/config.toml

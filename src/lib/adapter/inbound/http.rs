@@ -26,10 +26,7 @@ impl HttpServer {
 
         let listener = net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
 
-        Self {
-            router,
-            listener,
-        }
+        Self { router, listener }
     }
 
     pub async fn run(self) -> anyhow::Result<()> {

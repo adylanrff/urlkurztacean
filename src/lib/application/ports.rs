@@ -6,7 +6,7 @@ use crate::domain::url_shortener::models::{short_code::ShortCode, shortened_url:
 #[derive(Debug, Error)]
 pub enum CreateUrlError {
     #[error("database error")]
-    DBError,
+    DBError(#[from] sqlx::Error),
     #[error("url already exists")]
     AlreadyExists,
     #[error("lock error")]
@@ -16,7 +16,7 @@ pub enum CreateUrlError {
 #[derive(Debug, Error)]
 pub enum GetByCodeError {
     #[error("database error")]
-    DBError(anyhow::Error),
+    DBError(#[from] sqlx::Error),
     #[error("url not found")]
     NotFound,
 }
