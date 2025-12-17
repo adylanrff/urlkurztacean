@@ -5,6 +5,7 @@ use axum::{
     response::Redirect,
 };
 use serde::{Deserialize, Serialize};
+use tracing::instrument;
 
 use crate::{adapter::inbound::http::state::AppState, application::ports::UrlShortenerService};
 
@@ -12,16 +13,17 @@ pub async fn hello_world() -> &'static str {
     "Hello world!"
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ShortenUrlPayload {
     url: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ShortenUrlResponse {
     shortened_url: String,
 }
 
+#[instrument(skip(state))]
 pub async fn shorten_url<S: UrlShortenerService>(
     State(state): State<AppState<S>>,
     Json(payload): Json<ShortenUrlPayload>,
@@ -34,11 +36,10 @@ pub async fn shorten_url<S: UrlShortenerService>(
 
     let shortened_url = format!("/api/{}", res.short_code);
 
-    Ok(Json(ShortenUrlResponse {
-        shortened_url,
-    }))
+    Ok(Json(ShortenUrlResponse { shortened_url }))
 }
 
+#[instrument(skip(state))]
 pub async fn redirect_by_code<S: UrlShortenerService>(
     State(state): State<AppState<S>>,
     Path(code): Path<String>,

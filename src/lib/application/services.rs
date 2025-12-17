@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use async_trait::async_trait;
 use nanoid::nanoid;
 
@@ -7,7 +9,7 @@ use crate::domain::url_shortener::models::original_url::OriginalUrl;
 use crate::domain::url_shortener::models::short_code::ShortCode;
 use crate::domain::url_shortener::models::shortened_url::ShortenedUrl;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Service<T: ShortenedUrlRepository> {
     repo: T,
 }
@@ -15,7 +17,10 @@ pub struct Service<T: ShortenedUrlRepository> {
 const DEFAULT_SHORTCODE_LENGTH: usize = 8;
 
 #[async_trait]
-impl<T: ShortenedUrlRepository + Clone + Send + Sync + 'static> UrlShortenerService for Service<T> {
+impl<T> UrlShortenerService for Service<T>
+where
+    T: ShortenedUrlRepository + Clone + Send + Sync + 'static + Debug,
+{
     async fn shorten_url(
         &self,
         url: impl Into<String> + Send,

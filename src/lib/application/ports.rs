@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use async_trait::async_trait;
 use thiserror::Error;
 
@@ -28,7 +30,7 @@ pub trait ShortenedUrlRepository {
 }
 
 #[async_trait]
-pub trait UrlShortenerService: Clone + Send + Sync + 'static {
+pub trait UrlShortenerService: Clone + Send + Sync + 'static + Debug {
     async fn shorten_url(
         &self,
         url: impl Into<String> + Send,

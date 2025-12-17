@@ -8,7 +8,7 @@ use crate::{
     },
 };
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PostgresStorage {
     pool: Pool<Postgres>,
 }
